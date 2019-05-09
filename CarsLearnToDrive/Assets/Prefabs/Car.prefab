@@ -40,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4987469328873080}
   - component: {fileID: 23044879495102516}
-  - component: {fileID: 114402819912162874}
+  - component: {fileID: 8278923723337067924}
   - component: {fileID: 54010669149988690}
   - component: {fileID: 120019035604143492}
   m_Layer: 8
@@ -59,7 +59,7 @@ Transform:
   m_GameObject: {fileID: 1452981517083794}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 4616416941452766}
   - {fileID: 4973098332158932}
@@ -104,7 +104,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &114402819912162874
+--- !u!114 &8278923723337067924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,6 +116,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f4eb0236a2f93c4b909fcac49552798, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUserInput: 0
+  SensorMask:
+    serializedVersion: 2
+    m_Bits: 0
+  FitnessUnchangedDie: 5
 --- !u!54 &54010669149988690
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -149,7 +154,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: a2165c4693475f447ac5d3b62784a240, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -296,7 +301,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: f571e616edb7fbd4a939c954a2193509, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -373,7 +378,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 8fc5a121ea41e0242a5093eca629b1c3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

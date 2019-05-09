@@ -1,18 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] string _layerHitName = "CarCollider";
 
-    // Update is called once per frame
-    void Update()
+    private List<string> _increasedFitnessGuids = new List<string>();
+
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.gameObject.layer == 8)// LayerMask.NameToLayer(_layerHitName))
+        {
+            Car carComponent = other.transform.parent.GetComponent<Car>();
+            string carGuid = carComponent.TheGuid;
+
+            if (!_increasedFitnessGuids.Contains(carGuid))
+            {
+                _increasedFitnessGuids.Add(carGuid);
+                carComponent.CheckpointHit();
+            }
+        }
     }
 }
