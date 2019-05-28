@@ -13,7 +13,7 @@ public class Camera : MonoBehaviour
         {
             Car CurrentCar = transform.GetChild(i).GetComponent<Car>();
 
-            if (CurrentCar.Fitness > BestCar.Fitness)
+            if (CurrentCar.Score > BestCar.Score)
             {
                 BestCar = CurrentCar;
             }

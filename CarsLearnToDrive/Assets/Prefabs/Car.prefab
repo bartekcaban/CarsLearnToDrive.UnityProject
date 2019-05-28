@@ -117,10 +117,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseUserInput: 0
-  SensorMask:
+  sensorMask:
     serializedVersion: 2
-    m_Bits: 0
-  FitnessUnchangedDie: 5
+    m_Bits: 512
 --- !u!54 &54010669149988690
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using System.Linq;
 public class NeuralLayer
 {
     private Neuron[] _neurons;
-    private Random _random; // Contains a reference to the Random instance of the NeuralNetwork
+    private Random _random; 
 
     private double[][] _weights;
     private double[] _biases;
@@ -87,6 +87,11 @@ public class NeuralLayer
     private double ReLU(double value)
     {
         return value < 0 ? 0 : value;
+    }
+
+    private double Sigmoid(double value)
+    {
+        return 1 / (1 + Math.Exp(-value));
     }
     public void Mutate(double MutationProbablity, double MutationAmount)
     {

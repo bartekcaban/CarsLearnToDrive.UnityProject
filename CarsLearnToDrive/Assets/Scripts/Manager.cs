@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,15 @@ public class Manager : MonoBehaviour
 
     [SerializeField] int CarCount = 100; // The number of cars per generation
     [SerializeField] GameObject CarPrefab; // The Prefab of the car to be created for each instance
-    [SerializeField] Text GenerationNumberText; // Some text to write the generation number
+    public Text geneartionText;
+    public Text bestScoreText;
 
-    int GenerationCount = 0; // The current generation number
+    private int numberOfGenerations = 0; // The current generation number
 
     List<Car> Cars = new List<Car>(); // This list of cars currently alive
 
     NeuralNetwork BestNeuralNetwork = null; // The best NeuralNetwork currently available
-    int BestFitness = -1; // The FItness of the best NeuralNetwork ever created
+    private int bestScore = -1; 
 
     // On Start
     private void Start()
@@ -34,10 +36,8 @@ public class Manager : MonoBehaviour
     // Sarts a whole new generation
     void StartGeneration()
     {
-        GenerationCount++; // Increment the generation count
-        //GenerationNumberText.text = "Generation: " + GenerationCount; // Update generation text
-        Debug.Log(GenerationCount);
-        Debug.Log(BestFitness);
+        numberOfGenerations++; // Increment the generation count
+        geneartionText.text = $"Generation: {numberOfGenerations}";
 
         for (int i = 0; i < CarCount; i++)
         {
@@ -52,20 +52,27 @@ public class Manager : MonoBehaviour
             Cars.Add(Instantiate(CarPrefab, transform.position, Quaternion.identity, transform).GetComponent<Car>()); // Instantiate a new car and add it to the list of cars
         }
     }
-
     // Gets called by cars when they die
-    public void CarDead(Car DeadCar, int Fitness)
+    public void CarDead(Car car)
     {
-        Cars.Remove(DeadCar); // Remove the car from the list
-        Destroy(DeadCar.gameObject); // Destroy the dead car
-
-        if (Fitness > BestFitness) // If it is better that the current best car
+        if (car.Score > bestScore) // If it is better that the current best car
         {
-            BestNeuralNetwork = DeadCar.TheNetwork; // Make sure it becomes the best car
-            BestFitness = Fitness; // And also set the best fitness
+            BestNeuralNetwork = car.TheNetwork; // Make sure it becomes the best car
+           
+            SetBestScore(car.Score);
         }
 
-        if (Cars.Count <= 0) // If there are no cars left
-            StartGeneration(); // Create a new generation
+        Cars.Remove(car); // Remove the car from the list
+        Destroy(car.gameObject); // Destroy the dead car
+
+        if (!Cars.Any())
+        {
+            StartGeneration();
+        }   
+    }
+    private void SetBestScore(int newBestScore)
+    {
+        bestScore = newBestScore;
+        bestScoreText.text = $"Najlepszy wynik: {bestScore}";
     }
 }

@@ -14,9 +14,9 @@ public class NeuralNetwork
         }
     }
 
-    private ReadOnlyCollection<uint> _theTopology; // Contains the topology of the NeuralNetwork
-    private NeuralLayer[] _layers; // Contains the all the layers of the NeuralNetwork
-    private Random _theRandomizer; // It is the Random instance used to mutate the NeuralNetwork
+    private ReadOnlyCollection<uint> _theTopology; 
+    private NeuralLayer[] _layers; 
+    private Random _theRandomizer; 
 
     public NeuralNetwork(uint[] Topology, int? Seed = 0)
     {

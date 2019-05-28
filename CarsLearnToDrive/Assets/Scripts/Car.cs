@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
-    [SerializeField] bool UseUserInput = false; // Defines whether the car uses a NeuralNetwork or user input
-    [SerializeField] LayerMask SensorMask; // Defines the layer of the walls ("Wall")
-    [SerializeField] float FitnessUnchangedDie = 5; // The number of seconds to wait before checking if the fitness didn't increase
+    [SerializeField] bool UseUserInput = false; 
+    public LayerMask sensorMask;
+    private float sameScoreDeathCount = 2f;
 
-    public static NeuralNetwork NextNetwork = new NeuralNetwork(new uint[] { 6, 4, 3, 2 }, null); // public NeuralNetwork that refers to the next neural network to be set to the next instantiated car
+    public static NeuralNetwork NextNetwork = new NeuralNetwork(new uint[] { 6, 4, 3, 2 }, null); 
 
-    public string TheGuid { get; private set; } // The Unique ID of the current car
+    public Guid Id { get; private set; } 
 
-    public int Fitness { get; private set; } // The fitness/score of the current car. Represents the number of checkpoints that his car hit.
+    public int Score { get; private set; } 
 
-    public NeuralNetwork TheNetwork { get; private set; } // The NeuralNetwork of the current car
+    public NeuralNetwork TheNetwork { get; private set; } 
 
-    Rigidbody TheRigidbody; // The Rigidbody of the current car
-    LineRenderer TheLineRenderer; // The LineRenderer of the current car
+    Rigidbody TheRigidbody; 
+    LineRenderer TheLineRenderer;
 
     private void Awake()
     {
-        TheGuid = Guid.NewGuid().ToString(); // Assigns a new Unique ID for the current car
+        Id = Guid.NewGuid();
 
-        TheNetwork = NextNetwork; // Sets the current network to the Next Network
+        TheNetwork = NextNetwork;
         NextNetwork = new NeuralNetwork(NextNetwork.Topology, null); // Make sure the Next Network is reassigned to avoid having another car use the same network
 
         TheRigidbody = GetComponent<Rigidbody>(); // Assign Rigidbody
@@ -31,10 +31,10 @@ public class Car : MonoBehaviour
 
         StartCoroutine(IsNotImproving()); // Start checking if the score stayed the same for a lot of time
 
-        TheLineRenderer.positionCount = 17; // Make sure the line is long enough
+        TheLineRenderer.positionCount = 18; // Make sure the line is long enough
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (UseUserInput) // If we're gonna use user input
             Move(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal")); // Moves the car according to the input
@@ -64,6 +64,8 @@ public class Car : MonoBehaviour
         float SqrtHalf = Mathf.Sqrt(0.5f);
         NeuralInput[4] = CastRay(transform.right * SqrtHalf + transform.forward * SqrtHalf, Vector3.right * SqrtHalf + Vector3.forward * SqrtHalf, 9) / 4;
         NeuralInput[5] = CastRay(transform.right * SqrtHalf + -transform.forward * SqrtHalf, Vector3.right * SqrtHalf + -Vector3.forward * SqrtHalf, 13) / 4;
+        //NeuralInput[6] = CastRay(-transform.right * SqrtHalf + transform.forward * SqrtHalf, -Vector3.right * SqrtHalf + Vector3.forward * SqrtHalf, 15) / 4;
+        //NeuralInput[7] = CastRay(-transform.right * SqrtHalf + -transform.forward * SqrtHalf, -Vector3.right * SqrtHalf + -Vector3.forward * SqrtHalf, 17) / 4;
 
         // Feed through the network
         double[] NeuralOutput = TheNetwork.FeedForward(NeuralInput);
@@ -94,9 +96,9 @@ public class Car : MonoBehaviour
     {
         while (true)
         {
-            int OldFitness = Fitness; // Save the initial fitness
-            yield return new WaitForSeconds(FitnessUnchangedDie); // Wait for some time
-            if (OldFitness == Fitness) // Check if the fitness didn't change yet
+            int OldFitness = Score; // Save the initial fitness
+            yield return new WaitForSeconds(sameScoreDeathCount); // Wait for some time
+            if (OldFitness == Score) // Check if the fitness didn't change yet
                 WallHit(); // Kill this car
         }
     }
@@ -104,10 +106,10 @@ public class Car : MonoBehaviour
     // Casts a ray and makes it visible through the line renderer
     double CastRay(Vector3 RayDirection, Vector3 LineDirection, int LinePositionIndex)
     {
-        float Length = 4; // Maximum length of each ray
+        float Length = 8; // Maximum length of each ray
 
         RaycastHit Hit;
-        if (Physics.Raycast(transform.position, RayDirection, out Hit, Length, SensorMask)) // Cast a ray
+        if (Physics.Raycast(transform.position, RayDirection, out Hit, Length, sensorMask)) // Cast a ray
         {
             float Dist = Vector3.Distance(Hit.point, transform.position); // Get the distance of the hit in the line
             TheLineRenderer.SetPosition(LinePositionIndex, Dist * LineDirection); // Set the position of the line
@@ -132,13 +134,13 @@ public class Car : MonoBehaviour
     // This function is called through all the checkpoints when the car hits any.
     public void CheckpointHit()
     {
-        Fitness++; // Increase Fitness/Score
+        Score++; // Increase Fitness/Score
     }
 
     // Called by walls when hit by the car
     public void WallHit()
     {
-        Manager.Singleton.CarDead(this, Fitness); // Tell the Evolution Manager that the car is dead
+        Manager.Singleton.CarDead(this); // Tell the Evolution Manager that the car is dead
         gameObject.SetActive(false); // Make sure the car is inactive
     }
 }
